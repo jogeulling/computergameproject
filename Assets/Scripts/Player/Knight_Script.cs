@@ -4,6 +4,9 @@ public class Knight_Script : MonoBehaviour
 {
     float moveSpeed = 4.0f;
     float jumpPower = 15.0f;
+
+    private float curTime;
+    public float coolTime = 0.5f;
     SpriteRenderer spriteRenderer;
     Animator animator;
     Rigidbody2D rigid;
@@ -18,24 +21,25 @@ public class Knight_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         // 좌, 우 움직임을 제어
         if (Input.GetKey(KeyCode.A))
         {
             this.spriteRenderer.flipX = true;
-            this.rigid.velocity = new Vector2(-this.moveSpeed, this.rigid.velocity.y);
+            this.rigid.linearVelocity = new Vector2(-this.moveSpeed, this.rigid.linearVelocity.y);
         }
         else if (Input.GetKey(KeyCode.D))
         {
             this.spriteRenderer.flipX = false;
-            this.rigid.velocity = new Vector2(this.moveSpeed, this.rigid.velocity.y);
+            this.rigid.linearVelocity = new Vector2(this.moveSpeed, this.rigid.linearVelocity.y);
         }
         else
         {
-            this.rigid.velocity = new Vector2(0, this.rigid.velocity.y);
+            this.rigid.linearVelocity = new Vector2(0, this.rigid.linearVelocity.y);
         }
 
         // 좌, 우 이동시 애니메이션 활상화, 비활성화
-        if (this.rigid.velocity.normalized.x == 0)
+        if (this.rigid.linearVelocity.normalized.x == 0)
         {
             this.animator.SetBool("IsWalk", false);
         }
@@ -48,6 +52,19 @@ public class Knight_Script : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             this.rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        }
+
+        if (this.curTime <= 0)
+        {
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                this.animator.SetTrigger("Attack");
+                this.curTime = coolTime;
+            }
+        }
+        else
+        {
+            this.curTime -= Time.deltaTime;
         }
     }
 }

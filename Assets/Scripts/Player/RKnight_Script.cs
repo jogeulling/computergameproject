@@ -22,20 +22,20 @@ public class RKnight_Script : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             this.spriteRenderer.flipX = true;
-            this.rigid.velocity = new Vector2(-this.moveSpeed, this.rigid.velocity.y);
+            this.rigid.linearVelocity = new Vector2(-this.moveSpeed, this.rigid.linearVelocity.y);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
             this.spriteRenderer.flipX = false;
-            this.rigid.velocity = new Vector2(this.moveSpeed, this.rigid.velocity.y);
+            this.rigid.linearVelocity = new Vector2(this.moveSpeed, this.rigid.linearVelocity.y);
         }
         else
         {
-            this.rigid.velocity = new Vector2(0, this.rigid.velocity.y);
+            this.rigid.linearVelocity = new Vector2(0, this.rigid.linearVelocity.y);
         }
 
         // 좌, 우 이동시 애니메이션 활상화, 비활성화
-        if (this.rigid.velocity.normalized.x == 0)
+        if (this.rigid.linearVelocity.normalized.x == 0)
         {
             this.animator.SetBool("IsWalk", false);
         }
