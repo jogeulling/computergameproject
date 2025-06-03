@@ -2,8 +2,16 @@ using UnityEngine;
 
 public class RKnight_Script : MonoBehaviour
 {
+    public Transform groundCheck;
+    public LayerMask whatIsGround;
+    public float checkRadius = 0.45f;
     float moveSpeed = 4.0f;
     float jumpPower = 15.0f;
+    bool isGrounded;
+
+    private float curTime;
+    public float coolTime = 0.5f;
+
     SpriteRenderer spriteRenderer;
     Animator animator;
     Rigidbody2D rigid;
@@ -18,6 +26,8 @@ public class RKnight_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        this.isGrounded = Physics2D.OverlapCircle(this.groundCheck.position, this.checkRadius, this.whatIsGround);
+
         // 좌, 우 움직임을 제어
         if (Input.GetKey(KeyCode.LeftArrow))
         {
@@ -47,7 +57,23 @@ public class RKnight_Script : MonoBehaviour
         // jump를 제어
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            this.rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            if (this.isGrounded == true)
+            {
+                this.rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            }
+        }
+
+        if (this.curTime <= 0)
+        {
+            if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                this.animator.SetTrigger("Attack");
+                this.curTime = coolTime;
+            }
+        }
+        else
+        {
+            this.curTime -= Time.deltaTime;
         }
     }
 }
