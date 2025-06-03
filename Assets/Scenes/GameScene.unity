@@ -1596,6 +1596,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RKnight
       objectReference: {fileID: 0}
+    - target: {fileID: 1966973942759307148, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 4347503376455372130, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8

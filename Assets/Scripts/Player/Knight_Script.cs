@@ -11,21 +11,30 @@ public class Knight_Script : MonoBehaviour
 
     private float curTime;
     public float coolTime = 0.5f;
+    public LayerMask attack;
+    Vector2 center;
+    Vector2 size;
+
+
     SpriteRenderer spriteRenderer;
     Animator animator;
     Rigidbody2D rigid;
+    BoxCollider2D hitcheck;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         this.spriteRenderer = GetComponent<SpriteRenderer>();
         this.animator = GetComponent<Animator>();
         this.rigid = GetComponent<Rigidbody2D>();
+        this.hitcheck = GetComponentInChildren<BoxCollider2D>();
+        this.hitcheck.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         this.isGrounded = Physics2D.OverlapCircle(this.groundCheck.position, this.checkRadius, this.whatIsGround);
+        Collider2D hit = Physics2D.OverlapBox(this.center, this.size, 0, this.attack);
 
         // 좌, 우 움직임을 제어
         if (Input.GetKey(KeyCode.A))
@@ -62,10 +71,18 @@ public class Knight_Script : MonoBehaviour
             }
         }
 
+        // Attack을 제어
         if (this.curTime <= 0)
         {
             if (Input.GetKeyDown(KeyCode.J))
             {
+                AttackStart();
+
+                if (hit)
+                {
+                    Debug.Log("피격함!");
+                }
+
                 this.animator.SetTrigger("Attack");
                 this.curTime = coolTime;
             }
@@ -74,5 +91,19 @@ public class Knight_Script : MonoBehaviour
         {
             this.curTime -= Time.deltaTime;
         }
+    }
+
+    void AttackStart()
+    {
+        if (hitcheck != null)
+        {
+            this.center = this.hitcheck.transform.TransformPoint(this.hitcheck.offset);
+            this.size = this.hitcheck.size;
+        }    
+    }
+
+    void AttackEnd()
+    {
+        
     }
 }

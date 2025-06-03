@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 858475287223245354}
   - component: {fileID: 6667102211454480648}
   - component: {fileID: 8507204923307448556}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RKnight
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
