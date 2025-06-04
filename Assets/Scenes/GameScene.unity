@@ -1144,7 +1144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abdd094a70143345a38b2918f0cab3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sr: {fileID: 0}
+  sr: {fileID: 1167253956}
 --- !u!4 &1477313132 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1479077578279096543, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
@@ -1250,7 +1250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abdd094a70143345a38b2918f0cab3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sr: {fileID: 0}
+  sr: {fileID: 1730412717}
 --- !u!1 &1829885985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1536,6 +1536,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1477313132}
     - target: {fileID: 7713205048125226738, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
+      propertyPath: attack.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 7713205048125226738, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 64
       objectReference: {fileID: 0}
@@ -1580,7 +1584,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3704257954243813575, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
@@ -1595,6 +1600,10 @@ PrefabInstance:
     - target: {fileID: 1966973942759307148, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: m_Name
       value: RKnight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1966973942759307148, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1966973942759307148, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: m_TagString
@@ -1638,6 +1647,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4347503376455372130, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5967036108963336987, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8507204923307448556, guid: 84274c6199604474781a56bf61d8e83d, type: 3}

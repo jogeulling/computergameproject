@@ -9,7 +9,9 @@ public class Knight_Script : MonoBehaviour
     float jumpPower = 15.0f;
     bool isGrounded;
 
-    private float curTime;
+    bool isAttacked = false;
+    bool movePos = false;
+    private float curTime = 0;
     public float coolTime = 0.5f;
     public LayerMask attack;
     Vector2 center;
@@ -20,13 +22,18 @@ public class Knight_Script : MonoBehaviour
     Animator animator;
     Rigidbody2D rigid;
     BoxCollider2D hitcheck;
+    Transform hitcheckTransform;
+
+    Vector2 hitBoxOriginPos;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Application.targetFrameRate = 60;
         this.spriteRenderer = GetComponent<SpriteRenderer>();
         this.animator = GetComponent<Animator>();
         this.rigid = GetComponent<Rigidbody2D>();
         this.hitcheck = GetComponentInChildren<BoxCollider2D>();
+        this.hitcheckTransform = transform.Find("hitcheck");
         this.hitcheck.enabled = false;
     }
 
@@ -34,18 +41,33 @@ public class Knight_Script : MonoBehaviour
     void Update()
     {
         this.isGrounded = Physics2D.OverlapCircle(this.groundCheck.position, this.checkRadius, this.whatIsGround);
-        Collider2D hit = Physics2D.OverlapBox(this.center, this.size, 0, this.attack);
 
         // 좌, 우 움직임을 제어
         if (Input.GetKey(KeyCode.A))
         {
             this.spriteRenderer.flipX = true;
             this.rigid.linearVelocity = new Vector2(-this.moveSpeed, this.rigid.linearVelocity.y);
+            if (this.movePos == false)
+            {
+                Vector3 localPos = this.hitcheckTransform.localPosition;
+                localPos.x = -localPos.x;
+                this.hitcheckTransform.localPosition = localPos;
+
+                this.movePos = true;
+            }
         }
         else if (Input.GetKey(KeyCode.D))
         {
             this.spriteRenderer.flipX = false;
             this.rigid.linearVelocity = new Vector2(this.moveSpeed, this.rigid.linearVelocity.y);
+            if (this.movePos == true)
+            {
+                Vector3 localPos = this.hitcheckTransform.localPosition;
+                localPos.x = -localPos.x;
+                this.hitcheckTransform.localPosition = localPos;
+
+                this.movePos = false;
+            }
         }
         else
         {
@@ -72,34 +94,33 @@ public class Knight_Script : MonoBehaviour
         }
 
         // Attack을 제어
-        if (this.curTime <= 0)
-        {
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                AttackStart();
-
-                if (hit)
-                {
-                    Debug.Log("피격함!");
-                }
-
-                this.animator.SetTrigger("Attack");
-                this.curTime = coolTime;
-            }
-        }
-        else
+        if (this.curTime > 0)
         {
             this.curTime -= Time.deltaTime;
+        }
+
+        if (this.curTime <= 0 && Input.GetKey(KeyCode.J))
+        {
+            this.isAttacked = true;
+        }
+
+        if (this.curTime <= 0 && Input.GetKeyDown(KeyCode.J) && this.isAttacked)
+        {
+            Debug.Log("true");
+            this.animator.SetTrigger("Attack");
+            this.curTime = coolTime;
+            this.isAttacked = false;
         }
     }
 
     void AttackStart()
     {
-        if (hitcheck != null)
+        Collider2D hit = Physics2D.OverlapBox(this.hitcheckTransform.position, this.size, 0, this.attack);
+
+        if (hit)
         {
-            this.center = this.hitcheck.transform.TransformPoint(this.hitcheck.offset);
-            this.size = this.hitcheck.size;
-        }    
+            Debug.Log("피격함!");
+        }
     }
 
     void AttackEnd()
