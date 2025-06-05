@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Knight_Script : MonoBehaviour
@@ -14,17 +15,17 @@ public class Knight_Script : MonoBehaviour
     private float curTime = 0;
     public float coolTime = 0.5f;
     public LayerMask attack;
-    Vector2 center;
     Vector2 size;
 
+    bool isHit = false;
+    int HP = 30;
+    public int Damage = 10;
 
     SpriteRenderer spriteRenderer;
     Animator animator;
     Rigidbody2D rigid;
     BoxCollider2D hitcheck;
     Transform hitcheckTransform;
-
-    Vector2 hitBoxOriginPos;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -106,7 +107,6 @@ public class Knight_Script : MonoBehaviour
 
         if (this.curTime <= 0 && Input.GetKeyDown(KeyCode.J) && this.isAttacked)
         {
-            Debug.Log("true");
             this.animator.SetTrigger("Attack");
             this.curTime = coolTime;
             this.isAttacked = false;
@@ -116,15 +116,46 @@ public class Knight_Script : MonoBehaviour
     void AttackStart()
     {
         Collider2D hit = Physics2D.OverlapBox(this.hitcheckTransform.position, this.size, 0, this.attack);
-
+        GameObject player2 = GameObject.Find("RKnight");
+        RKnight_Script RKnight = player2.GetComponent<RKnight_Script>();
         if (hit)
         {
             Debug.Log("피격함!");
+            RKnight.Hit(Damage);
         }
     }
 
     void AttackEnd()
     {
-        
+
+    }
+    
+    public void Hit(int damage)
+    {
+        if (!this.isHit)
+        {
+            this.isHit = true;
+            this.HP -= damage;
+
+            if (this.HP <= 0)
+            {
+                this.animator.SetTrigger("Death");
+            }
+            else
+            {
+                this.animator.SetTrigger("Hit");
+                Debug.Log("피격됨!");
+            }
+        }
+    }
+
+    void HitEnd()
+    {
+        this.isHit = false;
+    }
+
+    void DeathEnd()
+    {
+        Destroy(gameObject);
     }
 }

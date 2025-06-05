@@ -1597,6 +1597,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1092909854987615777, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.268365
+      objectReference: {fileID: 0}
+    - target: {fileID: 1092909854987615777, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.343456
+      objectReference: {fileID: 0}
+    - target: {fileID: 1092909854987615777, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.0354
+      objectReference: {fileID: 0}
+    - target: {fileID: 1092909854987615777, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1092909854987615777, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.62
+      objectReference: {fileID: 0}
     - target: {fileID: 1966973942759307148, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: m_Name
       value: RKnight
@@ -1661,6 +1681,10 @@ PrefabInstance:
       propertyPath: groundCheck
       value: 
       objectReference: {fileID: 56747380}
+    - target: {fileID: 8507204923307448556, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: attack.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 8507204923307448556, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 64
