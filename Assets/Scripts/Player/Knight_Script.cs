@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 
 public class Knight_Script : MonoBehaviour
@@ -18,7 +19,7 @@ public class Knight_Script : MonoBehaviour
     Vector2 size;
 
     bool isHit = false;
-    int HP = 30;
+    int HP = 100;
     public int Damage = 10;
 
     SpriteRenderer spriteRenderer;
@@ -44,36 +45,40 @@ public class Knight_Script : MonoBehaviour
         this.isGrounded = Physics2D.OverlapCircle(this.groundCheck.position, this.checkRadius, this.whatIsGround);
 
         // 좌, 우 움직임을 제어
-        if (Input.GetKey(KeyCode.A))
+        if (!this.isHit)
         {
-            this.spriteRenderer.flipX = true;
-            this.rigid.linearVelocity = new Vector2(-this.moveSpeed, this.rigid.linearVelocity.y);
-            if (this.movePos == false)
+            if (Input.GetKey(KeyCode.A))
             {
-                Vector3 localPos = this.hitcheckTransform.localPosition;
-                localPos.x = -localPos.x;
-                this.hitcheckTransform.localPosition = localPos;
+                this.spriteRenderer.flipX = true;
+                this.rigid.linearVelocity = new Vector2(-this.moveSpeed, this.rigid.linearVelocity.y);
+                if (this.movePos == false)
+                {
+                    Vector3 localPos = this.hitcheckTransform.localPosition;
+                    localPos.x = -localPos.x;
+                    this.hitcheckTransform.localPosition = localPos;
 
-                this.movePos = true;
+                    this.movePos = true;
+                }
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                this.spriteRenderer.flipX = false;
+                this.rigid.linearVelocity = new Vector2(this.moveSpeed, this.rigid.linearVelocity.y);
+                if (this.movePos == true)
+                {
+                    Vector3 localPos = this.hitcheckTransform.localPosition;
+                    localPos.x = -localPos.x;
+                    this.hitcheckTransform.localPosition = localPos;
+
+                    this.movePos = false;
+                }
+            }
+            else
+            {
+                this.rigid.linearVelocity = new Vector2(0, this.rigid.linearVelocity.y);
             }
         }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            this.spriteRenderer.flipX = false;
-            this.rigid.linearVelocity = new Vector2(this.moveSpeed, this.rigid.linearVelocity.y);
-            if (this.movePos == true)
-            {
-                Vector3 localPos = this.hitcheckTransform.localPosition;
-                localPos.x = -localPos.x;
-                this.hitcheckTransform.localPosition = localPos;
-
-                this.movePos = false;
-            }
-        }
-        else
-        {
-            this.rigid.linearVelocity = new Vector2(0, this.rigid.linearVelocity.y);
-        }
+        
 
         // 좌, 우 이동시 애니메이션 활상화, 비활성화
         if (this.rigid.linearVelocity.normalized.x == 0)
@@ -109,7 +114,6 @@ public class Knight_Script : MonoBehaviour
         {
             this.animator.SetTrigger("Attack");
             this.curTime = coolTime;
-            this.isAttacked = false;
         }
     }
 
@@ -118,24 +122,24 @@ public class Knight_Script : MonoBehaviour
         Collider2D hit = Physics2D.OverlapBox(this.hitcheckTransform.position, this.size, 0, this.attack);
         GameObject player2 = GameObject.Find("RKnight");
         RKnight_Script RKnight = player2.GetComponent<RKnight_Script>();
+        int dir = player2.transform.position.x  - transform.position.x> 0 ? 1 : -1;
+
         if (hit)
         {
-            Debug.Log("피격함!");
-            RKnight.Hit(Damage);
+            RKnight.Hit(Damage, dir, 7f);
         }
     }
 
     void AttackEnd()
     {
-
+        this.isAttacked = false;
     }
     
-    public void Hit(int damage)
+    public void Hit(int damage, int dir, float knockbackPower)
     {
         if (!this.isHit)
         {
-            this.isHit = true;
-            this.HP -= damage;
+            this.rigid.AddForce(new Vector2(dir * 7, 1) * knockbackPower, ForceMode2D.Impulse);
 
             if (this.HP <= 0)
             {
@@ -144,14 +148,30 @@ public class Knight_Script : MonoBehaviour
             else
             {
                 this.animator.SetTrigger("Hit");
-                Debug.Log("피격됨!");
             }
+
+            this.HP -= damage;
+        }
+    }
+
+    IEnumerator HitStart()
+    {
+        this.isHit = true;
+        gameObject.layer = 9;
+
+        while (this.isHit)
+        {
+            this.spriteRenderer.color = new Color(1, 1, 1, 0);
+            yield return new WaitForSeconds(0.01f);
+            this.spriteRenderer.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(0.01f);
         }
     }
 
     void HitEnd()
     {
         this.isHit = false;
+        gameObject.layer = 7;
     }
 
     void DeathEnd()
