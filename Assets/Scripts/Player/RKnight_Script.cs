@@ -17,9 +17,13 @@ public class RKnight_Script : MonoBehaviour
     public LayerMask attack;
     Vector2 size;
 
+    bool Die = false;
     bool isHit = false;
-    int HP = 100;
-    int Damage = 10;
+    float HP = 100f;
+    float Damage = 10f;
+
+    public bool isGuarding = false;
+    float epsilon = 0.1f;
 
     SpriteRenderer spriteRenderer;
     Animator animator;
@@ -42,8 +46,12 @@ public class RKnight_Script : MonoBehaviour
     void Update()
     {
         this.isGrounded = Physics2D.OverlapCircle(this.groundCheck.position, this.checkRadius, this.whatIsGround);
+        if (Mathf.Abs(this.HP) < epsilon)
+        {
+            this.HP = 0f;
+        }
 
-        if (!isHit)
+        if (!this.isHit && !this.Die)
         {
             // 좌, 우 움직임을 제어
             if (Input.GetKey(KeyCode.LeftArrow))
@@ -114,18 +122,29 @@ public class RKnight_Script : MonoBehaviour
             this.animator.SetTrigger("Attack");
             this.curTime = coolTime;
         }
+
+        // Guard를 제어
+        if (Input.GetKey(KeyCode.Keypad2))
+        {
+            this.animator.SetBool("IsGuarding", true);
+            this.isGuarding = true;
+        }
     }
 
     void AttackStart()
     {
         Collider2D hit = Physics2D.OverlapBox(this.hitcheckTransform.position, this.size, 0, this.attack);
         GameObject player1 = GameObject.Find("LKnight");
-        Knight_Script RKnight = player1.GetComponent<Knight_Script>();
+        Knight_Script LKnight = player1.GetComponent<Knight_Script>();
         int dir = player1.transform.position.x - transform.position.x > 0 ? 1 : -1;
 
-        if (hit)
+        if (hit && !LKnight.isGuarding)
         {
-            RKnight.Hit(Damage, dir, 7f);
+            LKnight.Hit(Damage, dir, 7f);
+        }
+        else if (hit && LKnight.isGuarding)
+        {
+            LKnight.GuardHit(this.Damage, dir, 5f);
         }
     }
 
@@ -134,21 +153,26 @@ public class RKnight_Script : MonoBehaviour
         this.isAttacked = false;
     }
 
-    public void Hit(int damage, int dir, float knockbackPower)
+    public void Hit(float damage, int dir, float knockbackPower)
     {
         if (!this.isHit)
         {
             this.HP -= damage;
 
-            this.rigid.AddForce(new Vector2(dir * 7, 1) * knockbackPower, ForceMode2D.Impulse);
-
             if (this.HP <= 0)
             {
+                this.Die = true;
                 this.animator.SetTrigger("Death");
             }
             else
             {
-                this.animator.SetTrigger("Hit");
+                this.rigid.AddForce(new Vector2(dir * 7, 1) * knockbackPower, ForceMode2D.Impulse);
+
+                if (!this.isGuarding)
+                {
+                    this.animator.SetTrigger("Hit");
+                }
+                
             }
         }
     }
@@ -166,6 +190,18 @@ public class RKnight_Script : MonoBehaviour
         }
     }
 
+    public void GuardHit(float damage, int dir, float knockbackPower)
+    {
+        if (this.HP > 0)
+        {
+            damage = damage * 0.2f;
+            knockbackPower = 5f;
+            this.rigid.AddForce(new Vector2(dir * 7, 1) * knockbackPower, ForceMode2D.Impulse);
+
+            this.HP -= damage;
+        }
+    }
+
     void HitEnd()
     {
         this.isHit = false;
@@ -174,6 +210,20 @@ public class RKnight_Script : MonoBehaviour
     void DeathEnd()
     {
         Destroy(gameObject);
+    }
+
+    void GuardEnd()
+    {
+        if (!Input.GetKey(KeyCode.K))
+        {
+            this.animator.SetBool("IsGuarding", false);
+            this.isGuarding = false;
+        }
+    }
+
+    public float HPValue()
+    {
+        return this.HP;
     }
 }
 
