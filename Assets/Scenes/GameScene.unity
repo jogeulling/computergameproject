@@ -1905,6 +1905,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1966973942759307148, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
   m_PrefabInstance: {fileID: 6226727144930305599}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1519340993 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4347503376455372130, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+  m_PrefabInstance: {fileID: 6226727144930305599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1608946901
 GameObject:
   m_ObjectHideFlags: 0
@@ -2302,6 +2307,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7666600769230378869, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
   m_PrefabInstance: {fileID: 470716327662947095}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1894455077 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8712990528539583873, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
+  m_PrefabInstance: {fileID: 470716327662947095}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2047094558
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,6 +2586,10 @@ PrefabInstance:
       value: LKnight
       objectReference: {fileID: 0}
     - target: {fileID: 7713205048125226738, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
+      propertyPath: player2
+      value: 
+      objectReference: {fileID: 1519340993}
+    - target: {fileID: 7713205048125226738, guid: 19472741d6ca94240b35d3d7a64af5c8, type: 3}
       propertyPath: coolTime
       value: 0.5
       objectReference: {fileID: 0}
@@ -2729,6 +2743,10 @@ PrefabInstance:
       propertyPath: m_LinearDamping
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8507204923307448556, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
+      propertyPath: player1
+      value: 
+      objectReference: {fileID: 1894455077}
     - target: {fileID: 8507204923307448556, guid: 84274c6199604474781a56bf61d8e83d, type: 3}
       propertyPath: checkRadius
       value: 0.45

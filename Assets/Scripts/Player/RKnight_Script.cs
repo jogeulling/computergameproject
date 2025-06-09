@@ -4,6 +4,7 @@ using System.Collections;
 public class RKnight_Script : MonoBehaviour
 {
     public Transform groundCheck;
+
     public LayerMask whatIsGround;
     public float checkRadius = 0.45f;
     float moveSpeed = 4.0f;
@@ -86,7 +87,7 @@ public class RKnight_Script : MonoBehaviour
             }
 
         }
-        
+
         // 좌, 우 이동시 애니메이션 활상화, 비활성화
         if (this.rigid.linearVelocity.normalized.x == 0)
         {
@@ -124,10 +125,10 @@ public class RKnight_Script : MonoBehaviour
         }
 
         // Guard를 제어
-        if (Input.GetKey(KeyCode.Keypad2))
+        if (Input.GetKey(KeyCode.Keypad2) && !this.isGuarding)
         {
             this.animator.SetBool("IsGuarding", true);
-            this.isGuarding = true;
+            StartCoroutine(ReGuardAfterHit());
         }
     }
 
@@ -137,14 +138,19 @@ public class RKnight_Script : MonoBehaviour
         GameObject player1 = GameObject.Find("LKnight");
         Knight_Script LKnight = player1.GetComponent<Knight_Script>();
         int dir = player1.transform.position.x - transform.position.x > 0 ? 1 : -1;
+        bool enemyInfront = IsPlayer2InFront(LKnight.transform);
 
         if (hit && !LKnight.isGuarding)
         {
-            LKnight.Hit(Damage, dir, 7f);
+            LKnight.Hit(this.Damage, dir, 5f, enemyInfront);
+        }
+        else if (hit && LKnight.isGuarding && !enemyInfront)
+        {
+            LKnight.Hit(this.Damage, dir, 5f, enemyInfront);
         }
         else if (hit && LKnight.isGuarding)
         {
-            LKnight.GuardHit(this.Damage, dir, 5f);
+            LKnight.GuardHit(this.Damage, dir, 3f);
         }
     }
 
@@ -153,10 +159,11 @@ public class RKnight_Script : MonoBehaviour
         this.isAttacked = false;
     }
 
-    public void Hit(float damage, int dir, float knockbackPower)
+    public void Hit(float damage, int dir, float knockbackPower, bool enemyInfront)
     {
         if (!this.isHit)
         {
+            this.isHit = true;
             this.HP -= damage;
 
             if (this.HP <= 0)
@@ -166,20 +173,24 @@ public class RKnight_Script : MonoBehaviour
             }
             else
             {
-                this.rigid.AddForce(new Vector2(dir * 7, 1) * knockbackPower, ForceMode2D.Impulse);
+                this.rigid.AddForce(new Vector2(dir, 1) * knockbackPower, ForceMode2D.Impulse);
 
                 if (!this.isGuarding)
                 {
                     this.animator.SetTrigger("Hit");
+
                 }
-                
+                else if (this.isGuarding && !enemyInfront)
+                {
+                    this.animator.SetTrigger("Backhit");
+                }
             }
         }
     }
 
     IEnumerator HitStart()
     {
-        this.isHit = true;
+        gameObject.layer = 9;
 
         while (this.isHit)
         {
@@ -195,16 +206,18 @@ public class RKnight_Script : MonoBehaviour
         if (this.HP > 0)
         {
             damage = damage * 0.2f;
-            knockbackPower = 5f;
-            this.rigid.AddForce(new Vector2(dir * 7, 1) * knockbackPower, ForceMode2D.Impulse);
+            this.rigid.AddForce(new Vector2(dir, 1) * knockbackPower, ForceMode2D.Impulse);
 
             this.HP -= damage;
+
+            this.isHit = false;
         }
     }
 
     void HitEnd()
     {
         this.isHit = false;
+        gameObject.layer = 8;
     }
 
     void DeathEnd()
@@ -214,7 +227,7 @@ public class RKnight_Script : MonoBehaviour
 
     void GuardEnd()
     {
-        if (!Input.GetKey(KeyCode.K))
+        if (!Input.GetKey(KeyCode.Keypad2))
         {
             this.animator.SetBool("IsGuarding", false);
             this.isGuarding = false;
@@ -224,6 +237,28 @@ public class RKnight_Script : MonoBehaviour
     public float HPValue()
     {
         return this.HP;
+    }
+
+    bool IsPlayer2InFront(Transform other)
+    {
+        SpriteRenderer otherSprite = other.GetComponent<SpriteRenderer>();
+        // flipX가 true면 왼쪽, false면 오른쪽
+        Vector2 forward = otherSprite.flipX ? Vector2.left : Vector2.right;
+        Vector2 toOther = (other.position - this.transform.position).normalized;
+        float dot = Vector2.Dot(forward, toOther);
+        return dot < 0.0f;
+    }
+
+    IEnumerator ReGuardAfterHit()
+    {
+        if (this.isHit)
+        {
+            yield return new WaitForSeconds(0.2f);
+        } else
+        {
+            yield return new WaitForSeconds(0f);
+            this.isGuarding = true;
+        }
     }
 }
 
