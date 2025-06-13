@@ -1,12 +1,16 @@
 using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Knight_Script : MonoBehaviour
 {
     public Transform groundCheck;
 
     public LayerMask whatIsGround;
+    public AudioClip attackClip;
+    public AudioClip guardClip;
+    public AudioClip hitClip;
     public float checkRadius = 0.45f;
     float moveSpeed = 4.0f;
     float jumpPower = 15.0f;
@@ -121,6 +125,7 @@ public class Knight_Script : MonoBehaviour
 
         if (this.curTime <= 0 && Input.GetKeyDown(KeyCode.J) && this.isAttacked)
         {
+            SoundManager.instance.SFXPlay("Attack", attackClip);
             this.animator.SetTrigger("Attack");
             this.curTime = coolTime;
         }
@@ -191,7 +196,7 @@ public class Knight_Script : MonoBehaviour
     IEnumerator HitStart()
     {
         gameObject.layer = 9;
-
+        SoundManager.instance.SFXPlay("Hit", hitClip);
         while (this.isHit)
         {
             this.spriteRenderer.color = new Color(1, 1, 1, 0);
@@ -205,6 +210,7 @@ public class Knight_Script : MonoBehaviour
     {
         if (this.HP > 0)
         {
+            SoundManager.instance.SFXPlay("Guard", guardClip);
             damage = damage * 0.2f;
             this.rigid.AddForce(new Vector2(dir, 1) * knockbackPower, ForceMode2D.Impulse);
 
@@ -223,6 +229,8 @@ public class Knight_Script : MonoBehaviour
     void DeathEnd()
     {
         Destroy(gameObject);
+
+        SceneManager.LoadScene("Win1Scene");
     }
 
     void GuardEnd()

@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class RKnight_Script : MonoBehaviour
 {
     public Transform groundCheck;
 
     public LayerMask whatIsGround;
+    public AudioClip attackClip;
+    public AudioClip guardClip;
+    public AudioClip hitClip;
     public float checkRadius = 0.45f;
     float moveSpeed = 4.0f;
     float jumpPower = 15.0f;
@@ -120,6 +124,7 @@ public class RKnight_Script : MonoBehaviour
 
         if (this.curTime <= 0 && Input.GetKeyDown(KeyCode.Keypad1) && this.isAttacked)
         {
+            SoundManager.instance.SFXPlay("Attack", attackClip);
             this.animator.SetTrigger("Attack");
             this.curTime = coolTime;
         }
@@ -192,6 +197,8 @@ public class RKnight_Script : MonoBehaviour
     {
         gameObject.layer = 9;
 
+        SoundManager.instance.SFXPlay("Hit", hitClip);
+
         while (this.isHit)
         {
             this.spriteRenderer.color = new Color(1, 1, 1, 0);
@@ -205,6 +212,7 @@ public class RKnight_Script : MonoBehaviour
     {
         if (this.HP > 0)
         {
+            SoundManager.instance.SFXPlay("Guard", guardClip);
             damage = damage * 0.2f;
             this.rigid.AddForce(new Vector2(dir, 1) * knockbackPower, ForceMode2D.Impulse);
 
@@ -223,6 +231,8 @@ public class RKnight_Script : MonoBehaviour
     void DeathEnd()
     {
         Destroy(gameObject);
+
+        SceneManager.LoadScene("Win2Scene");
     }
 
     void GuardEnd()
