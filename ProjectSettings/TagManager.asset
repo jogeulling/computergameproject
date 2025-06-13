@@ -42,5 +42,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 2479945181
+    locked: 0
+  - name: Font
+    uniqueID: 483637247
+    locked: 0
+  - name: FontBackground
+    uniqueID: 3014654107
+    locked: 0
   m_RenderingLayers:
   - Default
